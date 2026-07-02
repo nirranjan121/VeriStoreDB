@@ -15,15 +15,15 @@ Every `insert`, every schema change — you can `commit` a snapshot, browse the 
 
 ## Features
 
-- 📋 **Table Management** — Create tables with typed columns (`int`, `float`, `text`, `bool`)
-- ➕ **Data Operations** — Insert and query records
-- 🔍 **B-Tree Indexing** — Efficient in-memory indexing using a custom B-Tree implementation
-- 📸 **Commit Snapshots** — Save the full database state with a message
-- 🕓 **Commit Log** — Browse your history of commits with hashes and timestamps
-- ⏳ **Time-Travel Queries** — Run a `select` query to see data exactly as it was at a specific past commit
-- ⏪ **Safe Restore** — Restore the database to a previous state safely without losing history (creates a new commit)
-- 🌿 **Branching** — Isolate table structures and data changes in separate, isolated branches
-- 💾 **Persistent Storage** — All data, schemas, refs, and snapshots are stored on disk
+-**Table Management** — Create tables with typed columns (`int`, `float`, `text`, `bool`)
+-**Data Operations** — Insert and query records
+-**B-Tree Indexing** — Efficient in-memory indexing using a custom B-Tree implementation
+-**Commit Snapshots** — Save the full database state with a message
+-**Commit Log** — Browse your history of commits with hashes and timestamps
+-**Time-Travel Queries** — Run a `select` query to see data exactly as it was at a specific past commit
+-**Safe Restore** — Restore the database to a previous state safely without losing history (creates a new commit)
+-**Branching** — Isolate table structures and data changes in separate, isolated branches
+-**Persistent Storage** — All data, schemas, refs, and snapshots are stored on disk
 
 ---
 
@@ -170,5 +170,8 @@ Unlike a traditional "hard checkout", `restore` is **non-destructive**. It resto
 
 ## Author
 
-**Akash A**  
+**Akash A** (Owner)         
+**Pavan Sabu** (Co-Author)  
+**Agraj K** (Co-Author)
+
 *Built as a systems programming project demonstrating data structures, file I/O, CLI design, and version control concepts — all from scratch in C++.*
