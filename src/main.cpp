@@ -122,6 +122,21 @@ int main(int argc, char** argv) {
             std::cout << "\n" << records.size() << " rows returned\n";
             return 0;
         }
+        case vsdb::Command::DELETE: {
+             if (!db.is_initialized()) {
+                 std::cerr << "Error: Database not initialized. Run 'vsdb init' first.\n";
+                 return 1;
+            }
+
+            if (cmd.columns.empty() || cmd.values.empty()) {
+                std::cerr << "Error: No delete conditions provided (use --columns/-c and --values/-v)\n";
+                return 1;
+    }
+
+            size_t deleted = db.delete_from(cmd.table_name, cmd.columns, cmd.values);
+            std::cout << "Deleted " << deleted << " row(s) from '" << cmd.table_name << "'\n";
+            return deleted > 0 ? 0 : 1;
+}
             
         case vsdb::Command::COMMIT:
             if (!db.is_initialized()) {

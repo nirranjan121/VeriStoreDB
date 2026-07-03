@@ -28,7 +28,16 @@ ParsedCommand CLIParser::parse(int argc, char** argv) {
     insert_cmd->add_option("table", insert_table, "Table name")->required();
     insert_cmd->add_option("--columns,-c", insert_cols, "Column names");
     insert_cmd->add_option("--values,-v", insert_vals, "Values to insert");
-    
+
+    // DELETE command
+    auto* delete_cmd = app.add_subcommand("delete", "Delete rows from a table matching conditions");
+    std::string delete_table;
+    std::vector<std::string> delete_cols;
+    std::vector<std::string> delete_vals;
+    delete_cmd->add_option("table", delete_table, "Table name")->required();
+    delete_cmd->add_option("--columns,-c", delete_cols, "Column names to match")->required();
+    delete_cmd->add_option("--values,-v", delete_vals, "Values to match (same order as --columns)")->required();
+
     // SELECT command
     auto* select_cmd = app.add_subcommand("select", "Select data from a table");
     std::string select_table;
@@ -66,7 +75,13 @@ ParsedCommand CLIParser::parse(int argc, char** argv) {
         result.table_name = insert_table;
         result.columns = insert_cols;
         result.values = insert_vals;
-    } else if (app.got_subcommand(select_cmd)) {
+
+    } else if (app.got_subcommand(delete_cmd)) {
+        result.cmd = Command::DELETE;
+        result.table_name = delete_table;
+        result.columns = delete_cols;
+        result.values = delete_vals;
+    }else if (app.got_subcommand(select_cmd)) {
         result.cmd = Command::SELECT;
         result.table_name = select_table;
     } else if (app.got_subcommand(commit_cmd)) {

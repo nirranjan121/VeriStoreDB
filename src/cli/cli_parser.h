@@ -11,6 +11,7 @@ enum class Command {
     CREATE_TABLE,
     INSERT,
     SELECT,
+    DELETE,
     COMMIT,
     LOG,
     CHECKOUT

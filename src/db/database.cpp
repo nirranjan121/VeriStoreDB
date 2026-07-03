@@ -4,7 +4,7 @@
 #include <sstream>
 #include <chrono>
 #include <iomanip>
-
+#include <algorithm>
 namespace vsdb {
 
 // TableSchema Implementation
@@ -23,6 +23,7 @@ bool TableSchema::save_to_file(const std::filesystem::path& path) const {
     
     return true;
 }
+
 
 TableSchema TableSchema::load_from_file(const std::filesystem::path& path) {
     TableSchema schema;
@@ -143,7 +144,46 @@ std::unique_ptr<Table> Table::load_from_disk(
     
     return table;
 }
+size_t Table::delete_where(const std::vector<std::string>& columns, const std::vector<std::string>& values) {
+    if (columns.empty() || columns.size() != values.size()) {
+        std::cerr << "Error: Delete conditions malformed (columns/values count mismatch)\n";
+        return 0;
+    }
 
+    // Resolve condition column names to indices in this table's schema
+    std::vector<size_t> col_indices;
+    for (const auto& col_name : columns) {
+        bool found = false;
+        for (size_t i = 0; i < schema_.columns.size(); ++i) {
+            if (schema_.columns[i].name == col_name) {
+                col_indices.push_back(i);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            std::cerr << "Error: Unknown column '" << col_name << "' in table '" << name_ << "'\n";
+            return 0;
+        }
+    }
+
+    size_t before = records_.size();
+
+    records_.erase(
+        std::remove_if(records_.begin(), records_.end(),
+            [&](const Record& record) {
+                for (size_t i = 0; i < col_indices.size(); ++i) {
+                    if (record.values[col_indices[i]] != values[i]) {
+                        return false; // any mismatch -> keep this row
+                    }
+                }
+                return true; // all conditions matched -> delete this row
+            }),
+        records_.end()
+    );
+
+    return before - records_.size();
+}
 // Database Implementation
 Database::Database() 
     : db_root_(std::filesystem::current_path()) {
@@ -307,6 +347,25 @@ bool Database::insert_into(const std::string& table_name, const Record& record) 
     }
     
     return true;
+}
+
+size_t Database::delete_from(const std::string& table_name, const std::vector<std::string>& columns, const std::vector<std::string>& values) {
+    auto table = get_table(table_name);
+    if (!table) {
+        std::cerr << "Error: Table '" << table_name << "' does not exist\n";
+        return 0;
+    }
+
+    size_t deleted = table->delete_where(columns, values);
+
+    if (deleted > 0) {
+        if (!table->save_to_disk(db_root_ / "data")) {
+            std::cerr << "Error: Failed to save table to disk\n";
+            return 0;
+        }
+    }
+
+    return deleted;
 }
 
 std::vector<Record> Database::select_from(const std::string& table_name) {

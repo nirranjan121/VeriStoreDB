@@ -40,7 +40,7 @@ public:
     
     bool insert(const Record& record);
     std::vector<Record> select_all() const;
-    
+    size_t delete_where(const std::vector<std::string>& columns, const std::vector<std::string>& values);
     const TableSchema& get_schema() const { return schema_; }
     std::string get_name() const { return name_; }
     
@@ -75,7 +75,9 @@ public:
     // Data operations
     bool insert_into(const std::string& table_name, const Record& record);
     std::vector<Record> select_from(const std::string& table_name);
-    
+    //
+    size_t delete_from(const std::string& table_name, const std::vector<std::string>& columns, const std::vector<std::string>& values);
+
     // Version control operations
     std::string commit(const std::string& message);
     std::vector<Commit> get_log();
