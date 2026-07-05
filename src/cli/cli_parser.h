@@ -14,7 +14,9 @@ enum class Command {
     DELETE,
     COMMIT,
     LOG,
-    CHECKOUT
+    CHECKOUT,
+    RESTORE,
+    BRANCH
 };
 
 struct ParsedCommand {
@@ -24,6 +26,9 @@ struct ParsedCommand {
     std::vector<std::string> values;
     std::string commit_message;
     std::string commit_hash;
+    std::string at_hash;          // for time-travel queries (--at <commit_hash>)
+    std::string branch_name;      // for branch commands
+    bool        branch_create = false; // true when -b flag is set
 };
 
 class CLIParser {
