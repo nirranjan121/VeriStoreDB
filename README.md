@@ -15,17 +15,17 @@ Every `insert`, every schema change — you can `commit` a snapshot, browse the 
 
 ## Features
 
--**Table Management** — Create tables with typed columns (`int`, `float`, `text`, `bool`)
--**Data Operations** — Insert and query records
--**B-Tree Indexing** — Efficient in-memory indexing using a custom B-Tree implementation
--**Commit Snapshots** — Save the full database state with a message
--**Commit Log** — Browse your history of commits with hashes and timestamps
--**Time-Travel Queries** — Run a `select` query to see data exactly as it was at a specific past commit
--**Safe Restore** — Restore the database to a previous state safely without losing history (creates a new commit)
--**Branching** — Isolate table structures and data changes in separate, isolated branches
--**Persistent Storage** — All data, schemas, refs, and snapshots are stored on disk
-
----
+- 📋 **Table Management** — Create tables with typed columns (`int`, `float`, `text`, `bool`)
+- ➕ **Data Operations** — Insert and query records
+- 🗑️ **Delete Operations** — Remove rows by matching column conditions, fully reversible via commit history
+- 🔍 **B-Tree Indexing** — Efficient in-memory indexing using a custom B-Tree implementation
+- 📸 **Commit Snapshots** — Save the full database state with a message
+- 🕓 **Commit Log** — Browse your history of commits with hashes and timestamps
+- ⏪ **Checkout** — Restore the database to any previous commit
+- ⏱️ **Time-Travel Queries** — Run a `select` query to see data exactly as it was at a specific past commit
+- 🛟 **Safe Restore** — Restore the database to a previous state safely without losing history (creates a new commit)
+- 🌿 **Branching** — Isolate table structures and data changes in separate, isolated branches
+- 💾 **Persistent Storage** — All data, schemas, refs, and snapshots are stored on disk
 
 ## Architecture
 
@@ -115,20 +115,20 @@ This reads the historic snapshot entirely in-memory—your current working table
 
 ### 6. Branching
 Branching allows you to create parallel, isolated versions of your database.
-
 ```bash
 # List all branches (* marks the current branch)
 vsdb branch
-
 # Create a new branch pointing to the current commit
 vsdb branch -b feature_x
-
 # Switch to the new branch (safely swaps your data directory)
 vsdb branch feature_x
 ```
 Any tables created or rows inserted on `feature_x` will not bleed into `main`. When you switch back to `main`, your files are safely swapped back to their `main` state.
-
 ### 7. View History
+=======
+
+### View commit history
+>>>>>>> 02d13b830a9205e497019c564f91af7f6a149a6d
 ```bash
 vsdb log
 ```
@@ -142,6 +142,17 @@ vsdb restore <commit_hash>
 Unlike a traditional "hard checkout", `restore` is **non-destructive**. It restores your files, and then immediately wraps that restored state into a **brand-new commit**. This ensures you never orphan or lose your timeline history!
 
 ---
+### Delete records
+```bash
+vsdb delete <table_name> --columns <col1> <col2> ... --values <val1> <val2> ...
+```
+```bash
+# Delete the user with id=3
+vsdb delete users --columns id --values 3
+
+# Delete matching multiple conditions (AND logic)
+vsdb delete users --columns id name --values 3 carol
+```
 
 ## Supported Data Types
 
