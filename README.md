@@ -179,12 +179,11 @@ vsdb delete users --columns id name --values 3 carol
 
 ---
 
-## Author
+## Authors
 
-**Akash A** (Owner)         
-**Pavan Sabu** (Co-Author)  
-**Agraj K** (Co-Author)
-
-**Nirranjan Naarayan M R** (Co-Author)
+- **Akash A** (Owner)
+- **Pavan Sabu** (Co-Author)
+- **Agraj K** (Co-Author)
+- **Nirranjan Naarayan M R** (Co-Author)
 
 *Built as a systems programming project demonstrating data structures, file I/O, CLI design, and version control concepts — all from scratch in C++.*
