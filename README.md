@@ -22,7 +22,7 @@ Every `insert`, every schema change — you can `commit` a snapshot, browse the 
 - 🕓 **Commit Log** — Browse your history of commits with hashes and timestamps
 - ⏪ **Checkout** — Restore the database to any previous commit
 - 💾 **Persistent Storage** — All data and snapshots are stored on disk
-
+- 🗑️ **Delete Operations** — Remove rows by matching column conditions, fully reversible via commit history
 ---
 
 ## Architecture
@@ -146,6 +146,7 @@ id      name    age     active
 vsdb commit "Added first user"
 ```
 
+
 ### View commit history
 ```bash
 vsdb log
@@ -165,6 +166,17 @@ vsdb checkout a3f9c12e
 ```
 
 ---
+### Delete records
+```bash
+vsdb delete <table_name> --columns <col1> <col2> ... --values <val1> <val2> ...
+```
+```bash
+# Delete the user with id=3
+vsdb delete users --columns id --values 3
+
+# Delete matching multiple conditions (AND logic)
+vsdb delete users --columns id name --values 3 carol
+```
 
 ## Supported Data Types
 
